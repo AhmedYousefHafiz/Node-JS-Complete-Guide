@@ -1,19 +1,23 @@
-const http = require("http");
-
 const express = require("express");
+const bodyParser = require("body-parser");
+const adminRoutes = require('./routes/admin');
+const shopRoutes = require('./routes/shop');
+const rootDir = require('./util/path');
+const path = require('path');
 
 const app = express();
 
+app.use(bodyParser.urlencoded({ extended: false }));
+
 const port = 3000;
-
-app.use((req, res, next) => {
-  console.log("In the middleware");
-  next();
+app.use('/admin',adminRoutes);
+app.use(shopRoutes);
+app.use((req,res,next)=>{
+  res.status(404).sendFile(path.join(rootDir,'views','404.html'));
 });
 
-app.use((req, res, next) => {
-  console.log("Another the middleware");
-  res.send("<h1>Hello from Express!</h1>");
-});
-const server = http.createServer(app);
-server.listen(port);
+// const server = http.createServer(app);
+// server.listen(port);
+//replace the above code with the bellow
+
+app.listen(port);
